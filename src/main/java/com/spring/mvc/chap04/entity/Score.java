@@ -1,5 +1,6 @@
 package com.spring.mvc.chap04.entity;
 
+import com.spring.mvc.chap04.dto.ScoreRequestDTO;
 import lombok.*;
 
 /**
@@ -19,4 +20,30 @@ public class Score {
     private int total; // 총점
     private double average; // 평균
     private Grade grade; // 학점
+
+    public Score(ScoreRequestDTO score) {
+        convertInputData(score);
+        calculateTotalAndAverage();
+        makeGrade();
+    }
+
+    private void makeGrade() {
+        if (average >= 90) this.grade = Grade.A;
+        else if (average >= 80) this.grade = Grade.B;
+        else if (average >= 70) this.grade = Grade.C;
+        else if (average >= 60) this.grade = Grade.D;
+        else this.grade = Grade.F;
+    }
+
+    private void calculateTotalAndAverage() {
+        this.total = kor + math + eng;
+        this.average = total / 3.0;
+    }
+
+    private void convertInputData(ScoreRequestDTO score) {
+        this.name = score.getName();
+        this.kor = score.getKor();
+        this.eng = score.getEng();
+        this.math = score.getMath();
+    }
 }
