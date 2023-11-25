@@ -20,6 +20,7 @@ package com.spring.mvc.chap04.controller;
  */
 
 import com.spring.mvc.chap04.dto.ScoreRequestDTO;
+import com.spring.mvc.chap04.dto.ScoreResponseDTO;
 import com.spring.mvc.chap04.entity.Score;
 import com.spring.mvc.chap04.repository.ScoreRepository;
 import com.spring.mvc.chap04.repository.ScoreRepositoryImpl;
@@ -31,7 +32,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/score")
@@ -54,11 +57,26 @@ public class ScoreController {
     // - 저장된 성적정보 리스트를 jsp에 보내줘야 함 (model에 데이터 전송)
     // - 저장된 성적정보 리스트를 어떻게 가져오느냐 from 데이터베이스
     @GetMapping("/list")
-    public String list(Model model) {
+    public String list(Model model,
+                       @RequestParam(defaultValue = "num") String sort) {
         System.out.println("/score/list GET !!");
-        List<Score> scoreList = repository.findAll();
-        System.out.println(scoreList);
-        model.addAttribute("sList", scoreList);
+
+        // db에서 조회한 모든데이터
+        List<Score> scoreList = repository.findAll(sort);
+//        System.out.println(scoreList);
+
+        // 클라이언트가 필요한 일부데이터
+//        List<ScoreResponseDTO> dtoList = new ArrayList<>();
+//        for (Score score : scoreList) {
+//            dtoList.add(new ScoreResponseDTO(score));
+//        }
+
+        List<ScoreResponseDTO> dtoList = scoreList.stream()
+                .map(ScoreResponseDTO::new)
+                .collect(Collectors.toList());
+
+
+        model.addAttribute("sList", dtoList);
 
         return "chap04/score-list";
     }
@@ -94,7 +112,7 @@ public class ScoreController {
     }
 
     //3. 성적 삭제 요청
-    @RequestMapping(value = "/remove/{stuNum}", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/remove/{stuNum}", method = {RequestMethod.GET, RequestMethod.POST})
     public String remove(HttpServletRequest request,
                          @PathVariable int stuNum) {
         System.out.printf("/score/remove %s !!\n", request.getMethod());
@@ -107,8 +125,13 @@ public class ScoreController {
 
     //4. 성적 상세 조회 요청
     @GetMapping("/detail")
-    public String detail() {
+    public String detail(int stuNum, Model model) {
         System.out.println("/score/detail GET !!");
-        return "";
+
+        Score score = repository.findOne(stuNum);
+
+        model.addAttribute("s", score);
+
+        return "chap04/score-detail";
     }
 }
