@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
+//@Repository
 public class BoardRepositoryImpl implements BoardRepository {
 
     private static final Map<Integer, Board> boardMap;
