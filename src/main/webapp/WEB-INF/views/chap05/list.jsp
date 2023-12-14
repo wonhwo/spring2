@@ -75,17 +75,21 @@
             <ul class="pagination pagination-lg pagination-custom">
 
 
-                <li class="page-item"><a class="page-link" href="#">prev</a></li>
+                <c:if test="${maker.prev}">
+                    <li class="page-item"><a class="page-link" href="/board/list?pageNo=${maker.begin - 1}">prev</a>
+                    </li>
+                </c:if>
 
-                <c:forEach var="i" begin="1" end="10" step="1">
+                <c:forEach var="i" begin="${maker.begin}" end="${maker.end}" step="1">
                     <li data-page-num="" class="page-item">
                         <a class="page-link" href="/board/list?pageNo=${i}">${i}</a>
                     </li>
                 </c:forEach>
 
 
-                <li class="page-item"><a class="page-link" href="#">next</a></li>
-
+                <c:if test="${maker.next}">
+                    <li class="page-item"><a class="page-link" href="/board/list?pageNo=${maker.end + 1}">next</a></li>
+                </c:if>
 
             </ul>
         </nav>
