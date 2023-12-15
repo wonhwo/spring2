@@ -35,6 +35,28 @@
         <button class="add-btn">새 글 쓰기</button>
     </div>
 
+    <div class="top-section">
+        <!-- 검색창 영역 -->
+        <div class="search">
+            <form action="/board/list" method="get">
+
+                <select class="form-select" name="type" id="search-type">
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="writer">작성자</option>
+                    <option value="tc">제목+내용</option>
+                </select>
+
+                <input type="text" class="form-control" name="keyword" value="${s.keyword}">
+
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+
+            </form>
+        </div>
+    </div>
+
     <div class="card-container">
 
         <c:forEach var="b" items="${bList}">
@@ -236,7 +258,22 @@
     });
 
   }
+
+
+  // 검색조건 셀렉트박스 옵션타입 고정하기
+  function fixSearchOption() {
+    // 셀렉트박스에 option태그들을 전부 가져옴
+    const $options = [...document.getElementById('search-type').children];
+
+    $options.forEach($opt => {
+      if ($opt.value === '${s.type}') {
+        $opt.setAttribute('selected', 'selected');
+      }
+    });
+  }
+
   appendPageActive();
+  fixSearchOption();
 
 
 </script>
