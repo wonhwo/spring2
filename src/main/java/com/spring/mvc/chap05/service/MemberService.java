@@ -78,8 +78,9 @@ public class MemberService {
                 .account(member.getAccount())
                         .email(member.getEmail())
                                 .nickName(member.getName())
-                                    .auth(member.getAuth().toString())
+                                    .auth(member.getAuth().name())
                                         .build();
+        log.debug("login : {}",dto);
 
         // 세션에 로그인한 회원의 정보 저장
         session.setAttribute(LoginUtils.LOGIN_KEY,dto);
