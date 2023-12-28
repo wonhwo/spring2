@@ -79,7 +79,7 @@ public class MemberContraller {
         log.info("/members/sign-in POST !");
         log.debug("parameter: {}", dto);
 
-        LoginResult result = memberService.authenticate(dto);
+        LoginResult result = memberService.authenticate(dto,request.getSession(),response);
         log.debug("login result: {}", result);
 
         ra.addFlashAttribute("msg", result);
