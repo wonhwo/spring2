@@ -46,7 +46,7 @@
             font-size: 20px;
         }
 
-        #title {
+        #title, #writer{
             font-size: 18px;
             width: 100%;
             padding: 8px;
@@ -129,6 +129,9 @@
 <div id="wrap" class="form-container">
     <h1>${b.boardNo}번 게시물 내용~ </h1>
     <h2># 작성일자: ${b.date}</h2>
+    <label for="title">작성자</label>
+    <input type="text" id="writer" name="write" value="${b.writer}" readonly>
+
     <label for="title">제목</label>
     <input type="text" id="title" name="title" value="${b.title}" readonly>
     <label for="content">내용</label>
@@ -242,6 +245,8 @@
 <script>
   const URL = '/api/v1/replies';
   const bno = '${b.boardNo}';
+  const currentAccount = `${login.account}`; //로그인한 사람 계정
+  const auth = `${login.auth}`;
 
   // 댓글 관련 비동기통신(AJAX) 스크립트
 
@@ -288,7 +293,7 @@
     if (replies !== null && replies.length > 0) {
       for (let reply of replies) {
 
-        const {rno, writer, text, regDate} = reply;
+        const {rno, writer, text, regDate ,account} = reply;
 
         tag += `
         <div id='replyContent' class='card-body' data-replyId='\${rno}'>
@@ -301,9 +306,13 @@
             <div class='row'>
                 <div class='col-md-9'>\${text}</div>
                 <div class='col-md-3 text-right'>
-                    <a id='replyModBtn' class='btn btn-sm btn-outline-dark' data-bs-toggle='modal' data-bs-target='#replyModifyModal'>수정</a>&nbsp;
+`;
+        if(auth==='ADMIN' || currentAccount===account){
+                  tag+=  `<a id='replyModBtn' class='btn btn-sm btn-outline-dark' data-bs-toggle='modal' data-bs-target='#replyModifyModal'>수정</a>&nbsp;
                     <a id='replyDelBtn' class='btn btn-sm btn-outline-dark' href='#'>삭제</a>
-                </div>
+`;
+        }
+               tag+=` </div>
             </div>
         </div>
       `;
@@ -415,7 +424,7 @@
         .then(responseData => {
           // console.log(responseData);
           // 입력창 비우고 새로운 목록 리렌더링
-          $replyWriter.value = '';
+          // $replyWriter.value = '';
           $replyText.value = '';
 
           fetchGetReplies(responseData.pageInfo.finalPage);

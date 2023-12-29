@@ -23,8 +23,16 @@
     </select>
 
     <select id="findOne" resultType="board">
-        SELECT * FROM tbl_board
+        SELECT
+            B.board_no, B.title
+            ,B.content, B.view_count
+            ,B.reg_date_time, B.account
+            ,M.name AS writer
+        FROM tbl_board B
+        join tbl_member M
+        on B.account = M.account
         WHERE board_no = #{boardNo}
+
     </select>
 
     <insert id="save">
